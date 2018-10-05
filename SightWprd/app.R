@@ -3,12 +3,21 @@ library(shiny)
 library(tidyverse)
 
 List_01 <- c("it", "It", "did", "Did", "a", "A",
-             "to", "To", "me", "Me", "go", "Go")
+             "to", "To", "me", "Me", "go", "Go", "you", "You")
+List_01 <- as.data.frame(List_01)
+colnames(List_01) <- "Word"
+List_01$List <- "List 01"
 
 List_02 <- c("like", "Like", "yes", "Yes",
              "am", "Am", "he", "He",
              "this", "This", "get", "Get",
              "be", "Be")
+List_02 <- as.data.frame(List_02)
+colnames(List_02) <- "Word"
+List_02$List <- "List 02"
+
+Global_List <- bind_rows(List_01, List_02)
+
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
@@ -19,27 +28,45 @@ ui <- fluidPage(
    # Sidebar with a slider input for number of bins 
    sidebarLayout(
       sidebarPanel(
-         checkboxGroupInput(List_Selection, c("List_01", "List_02"))
+         selectInput("List_Selection",
+                            "Choose a Sight Word List:",
+                            c("List 01", "List 02")),
+         actionButton("Initiate", "Generate Word")
       ),
       
-      # Show a plot of the generated distribution
+      # Display the Sight Word
       mainPanel(
-         plotOutput("distPlot")
+         htmlOutput("SightWord")
       )
    )
 )
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
+ 
+ Active_List <-  eventReactive(input$Initiate, {
+    
+    if(is.null(input$List_Selection)){
+      return()
+    }
+    
+   Reactive_List <- Global_List %>% filter(List == input$List_Selection) %>% select(Word)
    
-   output$distPlot <- renderPlot({
-      # generate bins based on input$bins from ui.R
-      x    <- faithful[, 2] 
-      bins <- seq(min(x), max(x), length.out = input$bins + 1)
-      
-      # draw the histogram with the specified number of bins
-      hist(x, breaks = bins, col = 'darkgray', border = 'white')
-   })
+   Sample_List <- sample(Reactive_List$Word, 1, replace = FALSE)
+   
+   Sample_List
+   
+  })
+  
+  output$SightWord <- renderUI({
+    
+    HTML(paste0('<b>',
+                '<font size = "7">',
+                Active_List(),
+                '</font size>',
+                '</b>'))
+    
+  })
 }
 
 # Run the application 
