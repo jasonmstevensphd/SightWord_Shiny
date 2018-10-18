@@ -16,8 +16,44 @@ List_02 <- as.data.frame(List_02)
 colnames(List_02) <- "Word"
 List_02$List <- "List 02"
 
-Global_List <- bind_rows(List_01, List_02)
+List_03 <- c("Is", "is", "went", "Went",
+             "We", "we", "are", "Are",
+             "Here", "here", "Can", "can",
+             "look", "Look")
+List_03 <- as.data.frame(List_03)
+colnames(List_03) <- "Word"
+List_03$List <- "List 03"
 
+List_04 <- c("See", "see", "The", "the",
+             "And", "and", "In", "in",
+             "My", "my", "Will", "will",
+             "She", "she")
+List_04 <- as.data.frame(List_04)
+colnames(List_04) <- "Word"
+List_04$List <- "List 04"
+
+List_05 <- c("Us", "us", "An", "an",
+             "I", "by", "By", 
+             "Up", "up", "Come", "come",
+             "said")
+List_05 <- as.data.frame(List_05)
+colnames(List_05) <- "Word"
+List_05$List <- "List 05"
+
+List_06 <- c("About", "about", "Good", "good",
+             "Now", "now", "Under", "under",
+             "As", "as")
+List_06 <- as.data.frame(List_06)
+colnames(List_06) <- "Word"
+List_06$List <- "List 06"
+
+Global_List <- bind_rows(List_01, List_02, List_03)
+
+Complete_List <- Global_List
+
+Complete_List$List <- "Complete List"
+
+Global_List <- bind_rows(Global_List, Complete_List)
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
@@ -30,7 +66,8 @@ ui <- fluidPage(
       sidebarPanel(
          selectInput("List_Selection",
                             "Choose a Sight Word List:",
-                            c("List 01", "List 02")),
+                            c("List 01", "List 02",
+                              "List 03", "Complete List")),
          actionButton("Initiate", "Generate Word")
       ),
       
